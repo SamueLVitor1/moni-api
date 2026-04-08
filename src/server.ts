@@ -1,28 +1,35 @@
-import Fastify from 'fastify';
-import cors from '@fastify/cors';
+import fastify from 'fastify'
+// Importante: No Node com 'type: module', os imports locais precisam do .js no final
+import { prisma } from './database/prisma.js' 
+import { env } from './env/index.js'
 
-const fastify = Fastify({
-  logger: true // Isso aqui ajuda muito no debug!
-});
+const app = fastify({ logger: true })
 
-async function bootstrap() {
-  // Configurando o CORS
-  await fastify.register(cors, {
-    origin: true,
-  });
-
-  // Rota de teste
-  fastify.get('/', async () => {
-    return { message: "Moni API is running with Fastify! 💸" };
-  });
-
+// Rota de teste rapidona
+app.get('/test-db', async (request, reply) => {
   try {
-    await fastify.listen({ port: 3333, host: '0.0.0.0' });
-    console.log('🚀 Server started on http://localhost:3333');
+    // Vai lá no Postgres e tenta buscar todos os usuários
+    const users = await prisma.users.findMany()
+    
+    return reply.send({ 
+      message: 'Conexão com o banco funcionando perfeitamente! 🚀', 
+      users 
+    })
+  } catch (error) {
+    app.log.error(error)
+    return reply.status(500).send({ error: 'Vish, deu ruim na conexão com o banco.' })
+  }
+})
+
+async function start() {
+  try {
+    // Usa a porta garantida pelo Zod
+    await app.listen({ port: env.PORT, host: '0.0.0.0' })
+    console.log(`🚀 Server started on http://localhost:${env.PORT}`)
   } catch (err) {
-    fastify.log.error(err);
-    process.exit(1);
+    app.log.error(err)
+    process.exit(1)
   }
 }
 
-bootstrap();
+start()
