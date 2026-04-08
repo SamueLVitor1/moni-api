@@ -1,0 +1,22 @@
+# Dependências
+node_modules/
+dist/
+build/
+
+# Variáveis de ambiente (IMPORTANTE: Nunca suba suas senhas!)
+.env
+
+# Banco de Dados SQLite (O Prisma gera esse arquivo localmente)
+prisma/*.db
+prisma/*.db-journal
+
+# Logs e Cache
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.eslintcache
+tsbuildinfo
+
+# Arquivos do Sistema Operacional (especialmente pro seu Mac)
+.DS_Store
+Thumbs.db
