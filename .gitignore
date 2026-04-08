@@ -20,3 +20,4 @@ tsbuildinfo
 # Arquivos do Sistema Operacional (especialmente pro seu Mac)
 .DS_Store
 Thumbs.db
+/src/generated/prisma

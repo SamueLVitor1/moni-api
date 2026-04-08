@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model bank_accounts {
+  id           String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id      String         @db.Uuid
+  name         String         @db.VarChar(100)
+  created_at   DateTime?      @default(now()) @db.Timestamptz(6)
+  users        users          @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  transactions transactions[]
+}
+
+model categories {
+  id           String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id      String         @db.Uuid
+  name         String         @db.VarChar(100)
+  created_at   DateTime?      @default(now()) @db.Timestamptz(6)
+  users        users          @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  transactions transactions[]
+}
+
+model transactions {
+  id                   String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id              String         @db.Uuid
+  bank_account_id      String?        @db.Uuid
+  category_id          String?        @db.Uuid
+  description          String         @db.VarChar(255)
+  amount               Decimal        @db.Decimal(10, 2)
+  type                 String         @default("EXPENSE") @db.VarChar(20)
+  is_paid              Boolean?       @default(false)
+  due_date             DateTime       @db.Date
+  installment_current  Int?
+  installment_total    Int?
+  installment_group_id String?        @db.Uuid
+  created_at           DateTime?      @default(now()) @db.Timestamptz(6)
+  bank_accounts        bank_accounts? @relation(fields: [bank_account_id], references: [id], onUpdate: NoAction)
+  categories           categories?    @relation(fields: [category_id], references: [id], onUpdate: NoAction)
+  users                users          @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model users {
+  id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name          String          @db.VarChar(255)
+  email         String          @unique @db.VarChar(255)
+  password_hash String
+  created_at    DateTime?       @default(now()) @db.Timestamptz(6)
+  bank_accounts bank_accounts[]
+  categories    categories[]
+  transactions  transactions[]
+}
