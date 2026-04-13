@@ -13,7 +13,7 @@ export async function authenticate(request: FastifyRequest, reply: FastifyReply)
 
   const { email, password } = authenticateBodySchema.parse(request.body)
 
-  try {
+  
     const usersRepository = new UsersRepository()
     const authenticateUseCase = new AuthenticateUseCase(usersRepository)
 
@@ -34,7 +34,4 @@ export async function authenticate(request: FastifyRequest, reply: FastifyReply)
     )
 
     return reply.status(200).send({ token })
-  } catch (err: any) {
-    return reply.status(400).send({ error: err.message })
-  }
 }

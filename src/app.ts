@@ -5,8 +5,11 @@ import { userRoutes } from './routes/user.routes.js'
 import fastifyJwt from '@fastify/jwt'
 import { env } from './env/index.js'
 import { authRoutes } from './routes/auth.routes.js'
+import { errorHandler } from './error-handler.js'
 
 export const app = fastify({ logger: true })
+
+app.setErrorHandler(errorHandler)
 
 app.register(cors, { origin: true })
 
