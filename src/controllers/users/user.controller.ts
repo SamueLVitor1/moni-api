@@ -1,7 +1,8 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
-import { UsersRepository } from '../repositories/users.repository.js'
-import { CreateUserUseCase } from '../useCases/users/create-user.js' 
+import { UsersRepository } from '../../repositories/users.repository.js'
+import { CreateUserUseCase } from '../../useCases/users/create-user.js'
+
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
 
