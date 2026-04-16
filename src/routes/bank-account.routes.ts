@@ -1,0 +1,19 @@
+import type { FastifyInstance } from 'fastify'
+import type { ZodTypeProvider } from 'fastify-type-provider-zod'
+import { z } from 'zod'
+import { createBankAccount } from '../controllers/bankAccounts/bank-account.controller.js'
+
+export async function bankAccountRoutes(app: FastifyInstance) {
+  app.withTypeProvider<ZodTypeProvider>().post(
+    '/bank-accounts',
+    {
+      onRequest: [app.authenticate],
+      schema: {
+        body: z.object({
+          name: z.string().min(2, 'O nome da conta precisa ter pelo menos 2 letras.'),
+        }),
+      },
+    },
+    createBankAccount
+  )
+}

@@ -6,6 +6,7 @@ import fastifyJwt from '@fastify/jwt'
 import { env } from './env/index.js'
 import { authRoutes } from './routes/auth.routes.js'
 import { errorHandler } from './error-handler.js'
+import { bankAccountRoutes } from './routes/bank-account.routes.js'
 
 export const app = fastify({ logger: true })
 
@@ -20,5 +21,10 @@ app.register(fastifyJwt, {
   secret: env.JWT_SECRET,
 })
 
+app.decorate('authenticate', async (request: any, _reply: any) => {
+  await request.jwtVerify()
+})
+
 app.register(userRoutes)
 app.register(authRoutes)
+app.register(bankAccountRoutes)
