@@ -12,4 +12,5 @@ export interface BankAccount {
 
 export interface IBankAccountsRepository {
   create(data: CreateBankAccountInput): Promise<BankAccount>
+  findManyByUserId(userId: string): Promise<BankAccount[]>
 }

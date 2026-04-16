@@ -15,7 +15,20 @@ export class BankAccountsRepository implements IBankAccountsRepository {
       id: bankAccount.id,
       name: bankAccount.name,
       user_id: bankAccount.user_id,
-      created_at: bankAccount.created_at ?? new Date(), 
+      created_at: bankAccount.created_at ?? new Date(),
     }
+  }
+
+  async findManyByUserId(userId: string): Promise<BankAccount[]> {
+    const bankAccounts = await prisma.bank_accounts.findMany({
+      where: { user_id: userId },
+    })
+
+    return bankAccounts.map((account) => ({
+      id: account.id,
+      name: account.name,
+      user_id: account.user_id,
+      created_at: account.created_at ?? new Date(),
+    }))
   }
 }

@@ -2,6 +2,7 @@ import type { FastifyInstance } from 'fastify'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { createBankAccount } from '../controllers/bankAccounts/bank-account.controller.js'
+import { fetchUserBankAccounts } from '../controllers/bankAccounts/fetch-user-bank-accounts.controller.js'
 
 export async function bankAccountRoutes(app: FastifyInstance) {
 
@@ -17,5 +18,11 @@ export async function bankAccountRoutes(app: FastifyInstance) {
       },
     },
     createBankAccount
+  )
+
+  app.withTypeProvider<ZodTypeProvider>().get(
+    '/bank-accounts',
+    {},
+    fetchUserBankAccounts
   )
 }

@@ -15,4 +15,8 @@ export class InMemoryBankAccountsRepository implements IBankAccountsRepository {
     this.items.push(bankAccount)
     return bankAccount
   }
+
+  async findManyByUserId(userId: string): Promise<BankAccount[]> {
+    return this.items.filter((item) => item.user_id === userId)
+  }
 }
