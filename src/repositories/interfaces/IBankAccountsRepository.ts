@@ -19,4 +19,5 @@ export interface IBankAccountsRepository {
   findManyByUserId(userId: string): Promise<BankAccount[]>
   findById(id: string): Promise<BankAccount | null>
   update(id: string, data: UpdateBankAccountInput): Promise<BankAccount>
+  remove(id: string): Promise<void>
 }

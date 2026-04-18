@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { createBankAccount } from '../controllers/bankAccounts/bank-account.controller.js'
 import { fetchUserBankAccounts } from '../controllers/bankAccounts/fetch-user-bank-accounts.controller.js'
 import { updateBankAccount } from '../controllers/bankAccounts/update-bank-account.controller.js'
+import { deleteBankAccount } from '../controllers/bankAccounts/delete-bank-account.controller.js'
 
 export async function bankAccountRoutes(app: FastifyInstance) {
 
@@ -31,12 +32,22 @@ export async function bankAccountRoutes(app: FastifyInstance) {
     '/bank-accounts/:id',
     {
       schema: {
-        params: z.object({ id: z.string().uuid() }),
+        params: z.object({ id: z.uuid() }),
         body: z.object({
           name: z.string().min(2, 'O nome da conta precisa ter pelo menos 2 letras.'),
         }),
       },
     },
     updateBankAccount
+  )
+
+  app.withTypeProvider<ZodTypeProvider>().delete(
+    '/bank-accounts/:id',
+    {
+      schema: {
+        params: z.object({ id: z.uuid() }),
+      },
+    },
+    deleteBankAccount
   )
 }

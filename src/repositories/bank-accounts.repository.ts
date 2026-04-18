@@ -58,4 +58,8 @@ export class BankAccountsRepository implements IBankAccountsRepository {
       created_at: account.created_at ?? new Date(),
     }
   }
+
+  async remove(id: string): Promise<void> {
+    await prisma.bank_accounts.delete({ where: { id } })
+  }
 }

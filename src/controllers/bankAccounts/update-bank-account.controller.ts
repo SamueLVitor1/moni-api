@@ -5,7 +5,7 @@ import { UpdateBankAccountUseCase } from '../../useCases/bankAccounts/update-ban
 
 export async function updateBankAccount(request: FastifyRequest, reply: FastifyReply) {
   const paramsSchema = z.object({
-    id: z.string().uuid(),
+    id: z.uuid(),
   })
 
   const bodySchema = z.object({

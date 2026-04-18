@@ -29,4 +29,8 @@ export class InMemoryBankAccountsRepository implements IBankAccountsRepository {
     this.items[index] = { ...this.items[index]!, ...data }
     return this.items[index]!
   }
+
+  async remove(id: string): Promise<void> {
+    this.items = this.items.filter((item) => item.id !== id)
+  }
 }
