@@ -7,6 +7,7 @@ import { env } from './env/index.js'
 import { authRoutes } from './routes/auth.routes.js'
 import { errorHandler } from './error-handler.js'
 import { bankAccountRoutes } from './routes/bank-account.routes.js'
+import { categoryRoutes } from './routes/category.routes.js'
 
 export const app = fastify({ logger: true })
 
@@ -28,3 +29,4 @@ app.decorate('authenticate', async (request: any, _reply: any) => {
 app.register(userRoutes)
 app.register(authRoutes)
 app.register(bankAccountRoutes)
+app.register(categoryRoutes)
