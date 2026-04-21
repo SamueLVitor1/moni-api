@@ -165,6 +165,27 @@ async findManyByUserId(userId: string): Promise<BankAccount[]> {
 - Arquivos: `kebab-case.ts` (`fetch-user-bank-accounts.ts`). Interfaces: `IPascalCase.ts` (`IBankAccountsRepository.ts`).
 - Use Cases em PascalCase com sufixo `UseCase` (`CreateBankAccountUseCase`).
 
+## Documentação (Swagger)
+Usamos `@fastify/swagger` + `@fastify/swagger-ui`. A UI fica disponível em `GET /docs`.
+
+- `jsonSchemaTransform` do `fastify-type-provider-zod` converte os schemas Zod em OpenAPI automaticamente — sem duplicação.
+- Todo endpoint deve declarar `tags` no schema para aparecer agrupado na UI.
+- Rotas protegidas devem declarar `security: [{ bearerAuth: [] }]` para exibir o cadeado.
+
+```ts
+const security = [{ bearerAuth: [] }]
+
+app.withTypeProvider<ZodTypeProvider>().get('/bank-accounts', {
+  schema: {
+    security,
+    tags: ['Bank Accounts'],
+    // ...
+  },
+}, handler)
+```
+
+Tags em uso: `Auth`, `Bank Accounts`, `Categories`.
+
 ## Fluxo de Trabalho ao Adicionar uma Feature
 Ordem canônica para um novo endpoint:
 1. **Interface** (`IXxxRepository.ts`) — defina `Input`, entidade e método.

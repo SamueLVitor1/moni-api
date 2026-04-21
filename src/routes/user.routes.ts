@@ -8,6 +8,7 @@ export async function userRoutes(app: FastifyInstance) {
     '/users',
     {
       schema: {
+        tags: ['Auth'],
         body: z.object({
           name: z.string().min(2, 'O nome precisa ter pelo menos 2 letras.'),
           email: z.string().email('E-mail inválido.'),

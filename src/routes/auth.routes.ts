@@ -10,6 +10,7 @@ export async function authRoutes(app: FastifyInstance) {
     '/sessions',
     {
       schema: {
+        tags: ['Auth'],
         body: z.object({
           email: z.string().email('E-mail inválido.'),
           password: z.string().min(6, 'A senha precisa ter pelo menos 6 caracteres.'),

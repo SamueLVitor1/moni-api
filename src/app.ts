@@ -1,6 +1,8 @@
 import fastify from 'fastify'
 import cors from '@fastify/cors'
-import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod'
+import swagger from '@fastify/swagger'
+import swaggerUi from '@fastify/swagger-ui'
+import { serializerCompiler, validatorCompiler, jsonSchemaTransform } from 'fastify-type-provider-zod'
 import { userRoutes } from './routes/user.routes.js'
 import fastifyJwt from '@fastify/jwt'
 import { env } from './env/index.js'
@@ -17,6 +19,30 @@ app.register(cors, { origin: true })
 
 app.setValidatorCompiler(validatorCompiler)
 app.setSerializerCompiler(serializerCompiler)
+
+app.register(swagger, {
+  openapi: {
+    info: {
+      title: 'Moni API',
+      description: 'API de finanças pessoais',
+      version: '1.0.0',
+    },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+  },
+  transform: jsonSchemaTransform,
+})
+
+app.register(swaggerUi, {
+  routePrefix: '/docs',
+})
 
 app.register(fastifyJwt, {
   secret: env.JWT_SECRET,

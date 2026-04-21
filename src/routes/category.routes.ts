@@ -6,6 +6,8 @@ import { fetchUserCategories } from '../controllers/categories/fetch-user-catego
 import { updateCategory } from '../controllers/categories/update-category.controller.js'
 import { deleteCategory } from '../controllers/categories/delete-category.controller.js'
 
+const security = [{ bearerAuth: [] }]
+
 export async function categoryRoutes(app: FastifyInstance) {
 
   app.addHook('onRequest', app.authenticate)
@@ -14,6 +16,8 @@ export async function categoryRoutes(app: FastifyInstance) {
     '/categories',
     {
       schema: {
+        security,
+        tags: ['Categories'],
         body: z.object({
           name: z.string().min(2, 'O nome da categoria precisa ter pelo menos 2 letras.'),
         }),
@@ -24,7 +28,12 @@ export async function categoryRoutes(app: FastifyInstance) {
 
   app.withTypeProvider<ZodTypeProvider>().get(
     '/categories',
-    {},
+    {
+      schema: {
+        security,
+        tags: ['Categories'],
+      },
+    },
     fetchUserCategories
   )
 
@@ -32,6 +41,8 @@ export async function categoryRoutes(app: FastifyInstance) {
     '/categories/:id',
     {
       schema: {
+        security,
+        tags: ['Categories'],
         params: z.object({ id: z.uuid() }),
         body: z.object({
           name: z.string().min(2, 'O nome da categoria precisa ter pelo menos 2 letras.'),
@@ -45,6 +56,8 @@ export async function categoryRoutes(app: FastifyInstance) {
     '/categories/:id',
     {
       schema: {
+        security,
+        tags: ['Categories'],
         params: z.object({ id: z.uuid() }),
       },
     },

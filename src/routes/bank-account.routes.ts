@@ -6,6 +6,8 @@ import { fetchUserBankAccounts } from '../controllers/bankAccounts/fetch-user-ba
 import { updateBankAccount } from '../controllers/bankAccounts/update-bank-account.controller.js'
 import { deleteBankAccount } from '../controllers/bankAccounts/delete-bank-account.controller.js'
 
+const security = [{ bearerAuth: [] }]
+
 export async function bankAccountRoutes(app: FastifyInstance) {
 
   app.addHook('onRequest', app.authenticate)
@@ -14,6 +16,8 @@ export async function bankAccountRoutes(app: FastifyInstance) {
     '/bank-accounts',
     {
       schema: {
+        security,
+        tags: ['Bank Accounts'],
         body: z.object({
           name: z.string().min(2, 'O nome da conta precisa ter pelo menos 2 letras.'),
         }),
@@ -24,7 +28,12 @@ export async function bankAccountRoutes(app: FastifyInstance) {
 
   app.withTypeProvider<ZodTypeProvider>().get(
     '/bank-accounts',
-    {},
+    {
+      schema: {
+        security,
+        tags: ['Bank Accounts'],
+      },
+    },
     fetchUserBankAccounts
   )
 
@@ -32,6 +41,8 @@ export async function bankAccountRoutes(app: FastifyInstance) {
     '/bank-accounts/:id',
     {
       schema: {
+        security,
+        tags: ['Bank Accounts'],
         params: z.object({ id: z.uuid() }),
         body: z.object({
           name: z.string().min(2, 'O nome da conta precisa ter pelo menos 2 letras.'),
@@ -45,6 +56,8 @@ export async function bankAccountRoutes(app: FastifyInstance) {
     '/bank-accounts/:id',
     {
       schema: {
+        security,
+        tags: ['Bank Accounts'],
         params: z.object({ id: z.uuid() }),
       },
     },
