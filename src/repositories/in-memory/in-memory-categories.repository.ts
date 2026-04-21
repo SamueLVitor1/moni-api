@@ -16,4 +16,8 @@ export class InMemoryCategoriesRepository implements ICategoriesRepository {
     this.items.push(category)
     return category
   }
+
+  async findManyByUserId(userId: string): Promise<Category[]> {
+    return this.items.filter((item) => item.user_id === userId)
+  }
 }

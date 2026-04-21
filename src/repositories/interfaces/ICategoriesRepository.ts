@@ -12,4 +12,5 @@ export interface Category {
 
 export interface ICategoriesRepository {
   create(data: CreateCategoryInput): Promise<Category>
+  findManyByUserId(userId: string): Promise<Category[]>
 }

@@ -17,4 +17,17 @@ export class CategoriesRepository implements ICategoriesRepository {
       created_at: category.created_at ?? new Date(),
     }
   }
+
+  async findManyByUserId(userId: string): Promise<Category[]> {
+    const categories = await prisma.categories.findMany({
+      where: { user_id: userId },
+    })
+
+    return categories.map((c) => ({
+      id: c.id,
+      name: c.name,
+      user_id: c.user_id,
+      created_at: c.created_at ?? new Date(),
+    }))
+  }
 }

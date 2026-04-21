@@ -2,6 +2,7 @@ import type { FastifyInstance } from 'fastify'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { createCategory } from '../controllers/categories/create-category.controller.js'
+import { fetchUserCategories } from '../controllers/categories/fetch-user-categories.controller.js'
 
 export async function categoryRoutes(app: FastifyInstance) {
 
@@ -17,5 +18,11 @@ export async function categoryRoutes(app: FastifyInstance) {
       },
     },
     createCategory
+  )
+
+  app.withTypeProvider<ZodTypeProvider>().get(
+    '/categories',
+    {},
+    fetchUserCategories
   )
 }
