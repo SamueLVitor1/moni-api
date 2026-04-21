@@ -10,7 +10,14 @@ export interface Category {
   created_at: Date
 }
 
+export interface UpdateCategoryInput {
+  name: string
+}
+
 export interface ICategoriesRepository {
   create(data: CreateCategoryInput): Promise<Category>
   findManyByUserId(userId: string): Promise<Category[]>
+  findById(id: string): Promise<Category | null>
+  update(id: string, data: UpdateCategoryInput): Promise<Category>
+  remove(id: string): Promise<void>
 }
