@@ -1,4 +1,4 @@
-import type { ITransactionsRepository, CreateTransactionInput, Transaction } from '../interfaces/ITransactionsRepository.js'
+import type { ITransactionsRepository, CreateTransactionInput, FindManyTransactionsFilters, Transaction } from '../interfaces/ITransactionsRepository.js'
 import { randomUUID } from 'node:crypto'
 
 export class InMemoryTransactionsRepository implements ITransactionsRepository {
@@ -29,5 +29,18 @@ export class InMemoryTransactionsRepository implements ITransactionsRepository {
   async createMany(data: CreateTransactionInput[]): Promise<Transaction[]> {
     const transactions = await Promise.all(data.map((item) => this.create(item)))
     return transactions
+  }
+
+  async findManyByUserId(userId: string, filters?: FindManyTransactionsFilters): Promise<Transaction[]> {
+    return this.items.filter((item) => {
+      if (item.user_id !== userId) return false
+      if (filters?.type && item.type !== filters.type) return false
+      if (filters?.bank_account_id && item.bank_account_id !== filters.bank_account_id) return false
+      if (filters?.category_id && item.category_id !== filters.category_id) return false
+      if (filters?.is_paid !== undefined && item.is_paid !== filters.is_paid) return false
+      if (filters?.month && item.due_date.getMonth() + 1 !== filters.month) return false
+      if (filters?.year && item.due_date.getFullYear() !== filters.year) return false
+      return true
+    })
   }
 }

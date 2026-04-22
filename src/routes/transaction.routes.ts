@@ -2,6 +2,7 @@ import type { FastifyInstance } from 'fastify'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { createTransaction } from '../controllers/transactions/create-transaction.controller.js'
+import { fetchUserTransactions } from '../controllers/transactions/fetch-user-transactions.controller.js'
 
 const security = [{ bearerAuth: [] }]
 
@@ -28,5 +29,24 @@ export async function transactionRoutes(app: FastifyInstance) {
       },
     },
     createTransaction
+  )
+
+  app.withTypeProvider<ZodTypeProvider>().get(
+    '/transactions',
+    {
+      schema: {
+        security,
+        tags: ['Transactions'],
+        querystring: z.object({
+          type: z.enum(['EXPENSE', 'INCOME']).optional(),
+          bank_account_id: z.uuid().optional(),
+          category_id: z.uuid().optional(),
+          is_paid: z.coerce.boolean().optional(),
+          month: z.coerce.number().int().min(1).max(12).optional(),
+          year: z.coerce.number().int().optional(),
+        }),
+      },
+    },
+    fetchUserTransactions
   )
 }

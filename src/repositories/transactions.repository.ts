@@ -1,5 +1,5 @@
 import { prisma } from '../database/prisma.js'
-import type { ITransactionsRepository, CreateTransactionInput, Transaction, TransactionType } from './interfaces/ITransactionsRepository.js'
+import type { ITransactionsRepository, CreateTransactionInput, FindManyTransactionsFilters, Transaction, TransactionType } from './interfaces/ITransactionsRepository.js'
 
 export class TransactionsRepository implements ITransactionsRepository {
   async create(data: CreateTransactionInput): Promise<Transaction> {
@@ -74,6 +74,33 @@ export class TransactionsRepository implements ITransactionsRepository {
         })
       )
     )
+
+    return rows.map((row) => this.toEntity(row))
+  }
+
+  async findManyByUserId(userId: string, filters?: FindManyTransactionsFilters): Promise<Transaction[]> {
+    const rows = await prisma.transactions.findMany({
+      where: {
+        user_id: userId,
+        ...(filters?.type && { type: filters.type }),
+        ...(filters?.bank_account_id && { bank_account_id: filters.bank_account_id }),
+        ...(filters?.category_id && { category_id: filters.category_id }),
+        ...(filters?.is_paid !== undefined && { is_paid: filters.is_paid }),
+        ...(filters?.month || filters?.year
+          ? {
+              due_date: {
+                gte: new Date(filters.year ?? 1970, (filters.month ?? 1) - 1, 1),
+                lt: new Date(
+                  filters.month === 12 ? (filters.year ?? 1970) + 1 : (filters.year ?? 1970),
+                  filters.month === 12 ? 0 : (filters.month ?? 1),
+                  1
+                ),
+              },
+            }
+          : {}),
+      },
+      orderBy: { due_date: 'asc' },
+    })
 
     return rows.map((row) => this.toEntity(row))
   }

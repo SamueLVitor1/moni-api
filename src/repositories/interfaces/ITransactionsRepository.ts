@@ -30,7 +30,17 @@ export interface Transaction {
   created_at: Date
 }
 
+export interface FindManyTransactionsFilters {
+  type?: TransactionType | undefined
+  bank_account_id?: string | undefined
+  category_id?: string | undefined
+  is_paid?: boolean | undefined
+  month?: number | undefined
+  year?: number | undefined
+}
+
 export interface ITransactionsRepository {
   create(data: CreateTransactionInput): Promise<Transaction>
   createMany(data: CreateTransactionInput[]): Promise<Transaction[]>
+  findManyByUserId(userId: string, filters?: FindManyTransactionsFilters): Promise<Transaction[]>
 }
