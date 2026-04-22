@@ -186,6 +186,22 @@ app.withTypeProvider<ZodTypeProvider>().get('/bank-accounts', {
 
 Tags em uso: `Auth`, `Bank Accounts`, `Categories`.
 
+## Regras de Domínio — Transactions
+
+### Parcelamento (Installments)
+Quando `installment_total > 1`, o `CreateTransactionUseCase` gera N transações atomicamente via `createMany` (uma única transação de banco de dados). Regras:
+
+- **Agrupamento**: todas as parcelas compartilham o mesmo `installment_group_id` (UUID gerado uma vez no Use Case).
+- **Numeração**: `installment_current` vai de 1 a N; `installment_total` é igual em todas.
+- **Datas**: a 1ª parcela usa o `due_date` enviado; as seguintes são incrementadas mês a mês via `addMonths`.
+- **Pagamento**: apenas a 1ª parcela herda o `isPaid` do request; as demais sempre partem como `false`.
+- **Descrição**: sufixada automaticamente com `(1/N)`, `(2/N)`, etc.
+- **Atomicidade**: `createMany` usa `prisma.$transaction([...])` — ou todas as parcelas são inseridas ou nenhuma.
+
+Sem `installment_total` (ou = 1): cria 1 transação simples, sem campos de parcelamento preenchidos.
+
+O response é sempre `{ transactions: Transaction[] }` — array com 1 item no caso simples, N no parcelado.
+
 ## Fluxo de Trabalho ao Adicionar uma Feature
 Ordem canônica para um novo endpoint:
 1. **Interface** (`IXxxRepository.ts`) — defina `Input`, entidade e método.

@@ -10,6 +10,7 @@ import { authRoutes } from './routes/auth.routes.js'
 import { errorHandler } from './error-handler.js'
 import { bankAccountRoutes } from './routes/bank-account.routes.js'
 import { categoryRoutes } from './routes/category.routes.js'
+import { transactionRoutes } from './routes/transaction.routes.js'
 
 export const app = fastify({ logger: true })
 
@@ -56,3 +57,4 @@ app.register(userRoutes)
 app.register(authRoutes)
 app.register(bankAccountRoutes)
 app.register(categoryRoutes)
+app.register(transactionRoutes)
